@@ -1,5 +1,6 @@
 #include "nBodyCuda.h" 
 
+<<<<<<< HEAD
 		/* nvcc compilation didn't work well with std11 
 		 * I was too lazy to figure out why, so I included
 		 * a missing function or two */
@@ -24,6 +25,8 @@ float stof(const char* s)
 	return rez * fact;
 }
 
+=======
+>>>>>>> e3977a9aa8cfaf316015eb971540a3df30b629ec
 		/* Save Position data to file */
 void SaveStateB(float4* bodies, int n, FILE* savefile)
 {
@@ -162,6 +165,7 @@ zero_accels( float3 *__restrict__ accels )
 	accels[index].y = 0.0f;
 	accels[index].z = 0.0f;
 }
+<<<<<<< HEAD
 
 
 		/* The big "main" simulation call. Includes all memory
@@ -325,3 +329,5 @@ nBodySim(unsigned int numPoints,
 	fclose(savefile);
 }
 
+=======
+>>>>>>> e3977a9aa8cfaf316015eb971540a3df30b629ec
