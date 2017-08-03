@@ -1,4 +1,5 @@
 #include "nBodyCuda.cu"
+#include <math.h>
 
 using namespace std;
 
@@ -6,7 +7,7 @@ int main(int argc, char *argv[]){
 
 			///********** Simulation Variables ***********///
 
-	char * dataName;
+	char dataPathName[20] = {"data/"};
 	unsigned int numPoints;
 	int numSteps;
 	int saveStep = 5;
@@ -36,7 +37,7 @@ int main(int argc, char *argv[]){
 		switch(opt) {
 			case 'i':
 			{
-				dataName = optarg; 
+				strcat(dataPathName, optarg);
 				inputSet = true;
 				break;
 			}
@@ -68,24 +69,29 @@ int main(int argc, char *argv[]){
 	}
 
 	cout << "\n\n	Using Parameters: \n"
-		 << "	Input Data: " << dataName << endl
+		 << "	Input Data: " << dataPathName << endl
 		 << "	Points: " << numPoints << endl
 		 << "	Steps: " << numSteps << endl
 		 << "	dt: " << dt << endl
 		 << "	Saving Every: " << saveStep << " steps " << endl
 		 << "	Pausing to cool every: " << coolStep << " numSteps " << endl
 		 << "	For " << sleepTime << " seconds " << endl << endl;
+	
 
+			///********** Save Parameters for Animation **********///
+
+	char ParamFile[50] = {0};
+	strcat(ParamFile, dataPathName);
+	strcat(ParamFile, "Params");
+	FILE * paramFile = fopen(ParamFile, "w");
+	fprintf(paramFile, "%i%s%i%s%12.6f%s", numPoints, "\t numPoints \n", 
+								   (int)numSteps/saveStep, "\t numSteps \n",
+								   dt, "\t dt \n");
+	fclose(paramFile);
 
 			///********** N-Body Simulation, Self Cleaning **********///
 
 	nBodySim(numPoints, numSteps, saveStep, coolStep, sleepTime,
-			 dt, softSquared, dataName);
-
-			///********** Save Parameters for Animation **********///
-
-	FILE * paramFile = fopen("params", "w");
-	fprintf(paramFile, "%i%s%i%s", numPoints, "\t", (int)numSteps/saveStep, "\t");
-	fclose(paramFile);
+			 dt, softSquared, dataPathName);
 }
 

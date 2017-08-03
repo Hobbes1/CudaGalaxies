@@ -176,21 +176,22 @@ nBodySim(unsigned int numPoints,
 		 int sleepTime,
 		 float dt,
 		 float softSquared,
-		 char* dataName)
+		 char* dataPathName)
 		 
 {
 	using namespace std;
 
-	char filein[20] = {0};
-	char fileout[20] = {0};
-	strcat(filein, dataName);
+	char filein[50] = {0};
+	char fileout[50] = {0};
+	strcat(filein, dataPathName);
 	strcat(filein, ".data");
-	strcat(fileout, dataName);
+	strcat(fileout, dataPathName);
 	strcat(fileout, "Run.data");
 	std::ifstream datafile(filein, ifstream::in);
     FILE* savefile = fopen(fileout, "w");
 	if(datafile.is_open())
-		cout <<"	Succesfully opened initial and output files"<< endl;
+		cout <<" 	Loading From: " << filein << endl;
+		cout <<"	Saving to: " << fileout << endl;
 
 			///********** CUDA Memory Parameters **********///
 
@@ -198,9 +199,9 @@ nBodySim(unsigned int numPoints,
 	const int numTiles = (numPoints + threadsPerBlock -1) / threadsPerBlock;
 	const int sharedMemSize = threadsPerBlock * 2 * sizeof(float4);
 	if (numTiles > MAX_GRID_SIZE){
-		cout << "Allocated too many tiles" << endl; return; }
+		cout << "	Allocated too many tiles" << endl; return; }
 	if (sharedMemSize > MAX_SHARED_MEM){
-		cout << "Allocated too much Shared Memory" << endl; return; }
+		cout << "	Allocated too much Shared Memory" << endl; return; }
 	
 			///*** Host Memory Objects ***///
 
@@ -208,7 +209,7 @@ nBodySim(unsigned int numPoints,
 	size_t size3 = numPoints * sizeof(float3);
 
 	if (3 * size4 + size3 > MAX_GLOB_MEM){
-		cout << "Allocated to much Global Memory" << endl; return; }
+		cout << "	Allocated to much Global Memory" << endl; return; }
 
 	cout << "\n	allocating shared memory: " << sharedMemSize << " MAX = 49152 " << endl;
 	cout << "	allocating global memory: " << 3 * size4 + size3 << " MAX = 2095251456" <<endl;

@@ -1,18 +1,17 @@
-CC = g++
+CUDA_FILES := $(wildcard src/*.cu)
+OBJ_FILES := $(addprefix obj/,$(notdir $(CUDA_FILES:.cu=.o)))
+
 NVCC = nvcc
-CFLAGS = -std=c++11
 NVFLAGS = -arch=sm_30
 LIBS = -lpthread
 
-nbody: nBodyCuda.o main.o 
+nbody: $(OBJ_FILES) 
 	$(NVCC) $(NVFLAGS) -o nbody main.o $(LIBS)
 
-main.o: main.cu 
+obj/%.o: src/%.cu
 	$(NVCC) $(NVFLAGS) -c $< $(LIBS)
-
-nBodyCuda.o: nBodyCuda.cu nBodyCuda.h
-	$(NVCC) $(NVFLAGS) -c $<  $(LIBS)
 
 clean:
 	rm -f *.o 
+	mv *.data *Params data
 	
